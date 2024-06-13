@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+      version: v1
+  replicas: 6 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: v1
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ngx-service
+spec:
+  selector:
+    app: nginx
+    version: v1
+  ports:
+    - port: 80 # Default port for image
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngx-deploy-ingress
+  #annotations:
+  #nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: insomnux.k8s.granux.fr
+      http:
+        paths:
+          - path: /test
+            pathType: Prefix
+            backend:
+              service:
+                name: ngx-service
+                port:
+                  number: 80
+---
+
