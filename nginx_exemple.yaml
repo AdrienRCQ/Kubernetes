@@ -17,8 +17,26 @@ spec:
       containers:
         - name: nginx
           image: nginx:latest
+          resources:
+            requests: # Minimum resources need
+              memory: "1Mi"
+              cpu: "1m"
+            limits: # Maximum resources need
+              cpu: "4"
           ports:
             - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
@@ -32,5 +50,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30007 # Spécifiez le port NodePort ici
+      nodePort: 30006 # Spécifiez le port NodePort ici
 
