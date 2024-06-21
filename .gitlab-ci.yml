@@ -1,0 +1,18 @@
+image: bitnami/kubectl
+
+stages:
+  - build
+  - destroy
+
+build-job:
+  stage: build
+  script:
+    - kubectl apply -f nginx_exemple.yaml
+
+destroy-job:
+  stage: destroy
+  script:
+    - kubectl delete -f nginx_exemple.yaml
+  when: manual
+
+
